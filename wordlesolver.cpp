@@ -23,8 +23,6 @@ struct Letter {
 using Wordle = std::vector<Letter>;
 using ColorWordle = std::vector<Color>;
 
-bool resultContains(Wordle result, char r) { return true; }
-
 bool resultContains(Wordle result, char r, int number) {
   int count = 0;
   for (Letter letter : result) {
@@ -32,6 +30,7 @@ bool resultContains(Wordle result, char r, int number) {
       count++;
     }
   }
+
   return number == count;
 }
 
@@ -92,18 +91,48 @@ void displayWordle(Wordle result) {
   std::cout << termcolor::reset << std::endl;
 }
 
+int getPosition(std::string str, char character,
+                std::vector<int> alreadyCheckedPosition) {
+  /*std::cout << "checked: ";
+  for (int v : alreadyCheckedPosition) std::cout << v << " ";
+  std::cout << std::endl;*/
+
+  for (int i = 0; i < str.size(); i++) {
+    if (str[i] == character &&
+        std::find(alreadyCheckedPosition.begin(), alreadyCheckedPosition.end(),
+                  i) == alreadyCheckedPosition.end())
+      return i;
+  }
+
+  return -1;
+}
 bool canBeValid(ColorWordle wordle, std::string origin, std::string test) {
+  std::vector<int> alreadyChecked;
   for (int i = 0; i < wordle.size(); i++) {
-    char letter = origin[i];
-    Color color = wordle[i];
-    if (color == Color::green && letter != test[i])
-      return false;
-    else if (color == Color::yellow &&
-             (origin[i] == test[i] || test.find(letter) == std::string::npos))
-      return false;
-    else if (color == Color::grey && test.find(letter) != std::string::npos)
+    if (wordle[i] == Color::green) {
+      if (origin[i] == test[i])
+        alreadyChecked.push_back(i);
+      else
+        return false;
+    }
+  }
+
+  for (int i = 0; i < wordle.size(); i++) {
+    if (wordle[i] == Color::yellow) {
+      int position = getPosition(test, origin[i], alreadyChecked);
+      if (position != -1 && origin[i] != test[i])
+        alreadyChecked.push_back(position);
+      else
+        return false;
+    }
+  }
+
+  for (int i = 0; i < wordle.size(); i++) {
+    if (wordle[i] == Color::grey &&
+        getPosition(test, origin[i], alreadyChecked) != -1)
       return false;
   }
+
   return true;
 }
 
