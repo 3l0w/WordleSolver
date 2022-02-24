@@ -41,7 +41,7 @@ endif()
 project(WordleSolver)
 
 # add the executable
-add_executable(WordleSolver wordlesolver.cpp)
+add_executable(WordleSolver wordlesolver.cpp solver.cpp solver.h)
 target_link_libraries(WordleSolver PRIVATE termcolor)
 target_link_libraries(WordleSolver PRIVATE indicators)
 target_link_libraries(WordleSolver PRIVATE replxx)
