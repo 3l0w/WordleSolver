@@ -38,10 +38,15 @@ if(NOT replxx_POPULATED)
 endif()
 
 # set the project name
-project(WordleSolver)
+project(WordleSolverCLI)
+
+if(NOT TARGET library_WordleSolver)    
+  add_subdirectory(src)    
+endif()    
 
 # add the executable
-add_executable(WordleSolver wordlesolver.cpp solver.cpp solver.h)
-target_link_libraries(WordleSolver PRIVATE termcolor)
-target_link_libraries(WordleSolver PRIVATE indicators)
-target_link_libraries(WordleSolver PRIVATE replxx)
+add_executable(WordleSolverCLI wordlesolver.cpp)
+target_link_libraries(WordleSolverCLI PRIVATE WordleSolver)
+target_link_libraries(WordleSolverCLI PRIVATE termcolor)
+target_link_libraries(WordleSolverCLI PRIVATE indicators)
+target_link_libraries(WordleSolverCLI PRIVATE replxx)
